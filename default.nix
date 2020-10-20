@@ -61,9 +61,18 @@ let
     inherit pkgs appElf cli-app-avalanche gecko;
     speculos = (import ./nix/dep/ledger-app-avalanche {}).speculos.speculos;
   };
-
+  nodeVersion = "12.14.1";
+  nodeSha256 = "1nvsivl496fgaypbk2pqqh7py29g7wsggyjlqydy1c0q4f24nyw7";
+  nodejs = pkgs.nodejs-12_x.overrideAttrs (oldAttrs: {
+    name = "nodejs-${nodeVersion}";
+    version = nodeVersion;
+    src = pkgs.fetchurl {
+      url = "https://nodejs.org/dist/v${nodeVersion}/node-v${nodeVersion}.tar.xz";
+      sha256 = nodeSha256;
+    };
+  });
 in {
-  inherit cli-app-avalanche gecko snapPackage;
+  inherit cli-app-avalanche gecko snapPackage nodejs;
   tests-full = tests;
   tests = tests.test-run;
 }
